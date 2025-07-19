@@ -1,0 +1,21 @@
+{
+  "name": "nodejs-1c2025-ecommerce-api-project",
+  "version": "1.0.0",
+  "description": "API para proyecto de E-Commerce.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Alejandro E. AGUILAR",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
