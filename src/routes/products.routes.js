@@ -9,13 +9,13 @@ const router = Router();
 
 import {getAllProducts, getProductById, getFilteredProducts} from '../controllers/products.controller.js';
 
-router.get('/products', (req, res) => {
-    res.send('Lista de productos');
+// router.get('/products', (req, res) => {
+    // res.send('Lista de productos');
     // res.status(200).json({
     //     message: 'Lista de productos',
     //     products: [] // Aquí iría el array de productos
     // });
-});
+// });
 
 router.get('/products', getAllProducts);
 

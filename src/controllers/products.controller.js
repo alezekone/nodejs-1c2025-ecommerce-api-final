@@ -10,14 +10,14 @@
 // de la capa de Servicios. Solo aquellas en las cuales haya
 // alguna forma de transformación de datos o de validación.
 import * as Service from '../services/products.service.js';
+// Para lo que no requiera lógica de negocio, llamaré al modelo
+// directamente desde el Controller.
+import * as Model from '../models/products.model.js'
 
 export const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find(); // Supongamos que Product es nuestro modelo
-        res.status(200).json({
-            message: 'Lista de productos',
-            products: ["producto1", "producto2", "producto3"] // Aquí iría el array de productos
-        });
+        const products = await Model.getAllProducts();
+        res.json(products);
     } catch (error) {
         res.status(500).json({
             message: 'Error al obtener los productos',
@@ -25,6 +25,21 @@ export const getAllProducts = async (req, res) => {
         });
     }
 };
+
+// export const getAllProducts = async (req, res) => {
+//     try {
+//         const products = await Product.find(); // Supongamos que Product es nuestro modelo
+//         res.status(200).json({
+//             message: 'Lista de productos',
+//             products: ["producto1", "producto2", "producto3"] // Aquí iría el array de productos
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: 'Error al obtener los productos',
+//             error: error.message
+//         });
+//     }
+// };
 
 export const getProductById = async (req, res) => {
     const id = req.params.id;
