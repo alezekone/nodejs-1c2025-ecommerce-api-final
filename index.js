@@ -50,8 +50,6 @@ app.get('/', (req, res) => {
     res.json({message: 'Hola mundo desde Express !!!', status: 'success'});
 });
 
-app.use('/api/auth', authRouter);
-
 app.get('/api', (req, res) => {
     res.json({
         message: 'API funcionando correctamente',
@@ -59,6 +57,7 @@ app.get('/api', (req, res) => {
     });
 });
 
+app.use('/api/auth', authRouter);
 // Usamos el router de productos. Le ponemos el prefijo '/api', así que 
 // la ruta debe tener la forma http://localhost:3000/api/products.
 app.use('/api', productsRouter);
