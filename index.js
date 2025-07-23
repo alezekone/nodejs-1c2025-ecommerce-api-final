@@ -2,8 +2,8 @@ import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
 
-import productsRouter from './src/routes/products.routes.js';
-import authRouter from './src/routes/auth.routes.js';
+import productsRouter from './src/routes/products.router.js';
+import authRouter from './src/routes/auth.router.js';
 
 
 const app = express();
@@ -38,10 +38,19 @@ app.use((req, res, next) => {
     next();
 });
 
+// Uso este middleware para poder recibir/parsear JSON
+// en el body de las requests. También se puede usar body-parser,
+// pero desde Express 4.16.0 ya viene incluido en Express.
+// Me permite obtener el body de la request y transformarlo en 
+// un objeto JSON que es req.body.
+app.use(express.json()); 
+
 app.get('/', (req, res) => {
     // res.status(200).send('Hola mundo desde Express !');
     res.json({message: 'Hola mundo desde Express !!!', status: 'success'});
 });
+
+app.use('/api/auth', authRouter);
 
 app.get('/api', (req, res) => {
     res.json({

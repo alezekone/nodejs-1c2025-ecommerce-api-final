@@ -8,7 +8,7 @@ import {Router} from 'express';
 const router = Router();
 
 import {getAllProducts, getProductById, getFilteredProducts} from '../controllers/products.controller.js';
-
+import {auth} from '../middlewares/auth.middleware.js';
 // router.get('/products', (req, res) => {
     // res.send('Lista de productos');
     // res.status(200).json({
@@ -17,7 +17,7 @@ import {getAllProducts, getProductById, getFilteredProducts} from '../controller
     // });
 // });
 
-router.get('/products', getAllProducts);
+router.get('/products', auth, getAllProducts);
 
 router.get('/product/:id', (req,res) => {
     res.send(`Este es un GET del producto con id ${id}`);
