@@ -57,7 +57,7 @@ app.get('/api', (req, res) => {
     });
 });
 
-app.use('/api/auth', authRouter);
+// app.use('/api/auth', authRouter);
 // Usamos el router de productos. Le ponemos el prefijo '/api', así que 
 // la ruta debe tener la forma http://localhost:3000/api/products.
 app.use('/api', productsRouter);

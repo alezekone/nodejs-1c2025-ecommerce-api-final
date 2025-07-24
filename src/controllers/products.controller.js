@@ -64,6 +64,94 @@ export const getProductById = async (req, res) => {
     }
 }
 
+export const createNewProduct = async (req, res) => {
+    const name = req.body.name;
+    const price = req.body.price;
+    const category = req.body.category; /*Espero un array*/
+    if (Array.isArray(req.body.category)) 
+        console.log(`Category is an array ${req.body.category}`);
+    else
+        console.log(`Category is not an array ${req.body.category}`); 
+    try {
+        const newProduct = await Model.createProduct({ name, price, category });
+        res.status(201).json({
+            message: 'Producto creado exitosamente',
+            product: newProduct
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al crear el producto',
+            error: error.message
+        });
+    }
+}
+
+export const updateProduct = async (req, res) => {
+    const name = req.body.name;
+    const price = req.body.price;
+    const category = req.body.category; /*Espero un array*/
+    if (Array.isArray(req.body.category)) 
+        console.log(`Category is an array ${req.body.category}`);
+    else
+        console.log(`Category is not an array ${req.body.category}`); 
+    try {
+        const updatedProduct = await Model.updateProduct(id, { name, price, category });
+        res.status(201).json({
+            message: 'Producto creado exitosamente',
+            product: updatedProduct
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al crear el producto',
+            error: error.message
+        });
+    }
+}
+
+export const replaceProduct = async (req, res) => {
+    const name = req.body.name;
+    const price = req.body.price;
+    const category = req.body.category; /*Espero un array*/
+    if (Array.isArray(req.body.category)) 
+        console.log(`Category is an array ${req.body.category}`);
+    else
+        console.log(`Category is not an array ${req.body.category}`); 
+    try {
+        const updatedProduct = await Model.replaceProduct(id, { name, price, category });
+        res.status(201).json({
+            message: 'Producto creado exitosamente',
+            product: updatedProduct
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al crear el producto',
+            error: error.message
+        });
+    }
+}
+
+export const deleteProduct = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const borrado = await Model.deleteProduct(id);
+        if(!borrado) {
+            res.status(404).json({
+                message: "No se eliminó nada."
+            });
+        } else {
+            res.status(200).json({
+                message: "Producto eliminado exitosamente."
+            });
+        }
+    } catch {
+        res.status(500).json(
+            {
+                message: "Error al interactuar con la Firestore."
+            }
+        )
+    }
+}
+
 // Esta getProductById de cuando tenía el array de 
 // productos hardcodeado.
 // export const getProductById = async (req, res) => {
