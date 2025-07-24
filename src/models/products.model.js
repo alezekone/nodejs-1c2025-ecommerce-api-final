@@ -5,7 +5,7 @@
 
 // Acá tendrá lugar la integración con Firebase.
 import { db } from './firebase.js';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 // Traeré datos de la colección "products".
 const productsCollection = collection(db, 'products');
 
@@ -24,6 +24,22 @@ export const getAllProducts = async () => {
     }
 };
 
+export const getProductById = async (id) => {
+    try {
+        const docRef = doc(productsCollection, id);
+        const docSnapshot = await getDoc(docRef);
+        if (!docSnapshot.exists()) {
+            return null;
+        }
+        return {
+            id: docSnapshot.id,
+            ...docSnapshot.data()
+        };
+    } catch (error) {
+        console.error('Error al obtener el producto desde Firebase/Firestore:', error);
+        throw new Error('No se pudo obtener el producto');
+    }
+};
 
 
 

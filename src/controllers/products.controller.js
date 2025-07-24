@@ -44,23 +44,48 @@ export const getAllProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
     const id = req.params.id;
     try {
-        const product = await products.findById(product => product.id === id);
-        if (!product) {
-            return res.status(404).json({
-                message: 'Producto no encontrado'
+        const product = await Model.getProductById(id);
+        if(!product) {
+            res.status(404).json({
+                message: "Producto inexistente en la BD."
+            });
+        } else {
+            res.status(200).json({
+                message: "Detalles del producto",
+                product
             });
         }
-        res.status(200).json({
-            message: 'Detalles del producto',
-            product
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: 'Error al obtener el producto',
-            error: error.message
-        });
+    } catch {
+        res.status(500).json(
+            {
+                message: "Error al interactuar con la Firestore."
+            }
+        )
     }
-};
+}
+
+// Esta getProductById de cuando tenía el array de 
+// productos hardcodeado.
+// export const getProductById = async (req, res) => {
+//     const id = req.params.id;
+//     try {
+//         const product = await products.findById(product => product.id === id);
+//         if (!product) {
+//             return res.status(404).json({
+//                 message: 'Producto no encontrado'
+//             });
+//         }
+//         res.status(200).json({
+//             message: 'Detalles del producto',
+//             product
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             message: 'Error al obtener el producto',
+//             error: error.message
+//         });
+//     }
+// };
 
 // Esta es la que voy a traer -luego- desde la capa de servicios.
 export const getFilteredProducts = (req, res) => {

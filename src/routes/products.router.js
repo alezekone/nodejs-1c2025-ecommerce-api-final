@@ -18,8 +18,10 @@ import {auth} from '../middlewares/auth.middleware.js';
 // });
 
 router.get('/products', auth, getAllProducts);
+router.get('/products/:id', getProductById);
 
-router.get('/product/:id', (req,res) => {
+router.get('/products/:id', (req,res) => {
+    const id = req.params.id;
     res.send(`Este es un GET del producto con id ${id}`);
 });
 
