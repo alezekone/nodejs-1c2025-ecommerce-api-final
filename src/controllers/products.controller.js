@@ -86,42 +86,86 @@ export const createNewProduct = async (req, res) => {
     }
 }
 
+// Esto es para un PATCH, que actualiza parcialmente un producto.
 export const updateProduct = async (req, res) => {
-    const name = req.body.name;
-    const price = req.body.price;
-    const category = req.body.category; /*Espero un array*/
+    const id = req.params.id;
+    const name = req.body.name; // Ojo, si no viene, será undefined !!!
+    const price = req.body.price; // Ojo, si no viene, será undefined !!!
+    const category = req.body.category; /*Espero un array*/ // Ojo, si no viene, será undefined !!!
+    console.log("Data to update with: ", req.body);
     if (Array.isArray(req.body.category)) 
         console.log(`Category is an array ${req.body.category}`);
     else
         console.log(`Category is not an array ${req.body.category}`); 
     try {
-        const updatedProduct = await Model.updateProduct(id, { name, price, category });
-        res.status(201).json({
-            message: 'Producto creado exitosamente',
-            product: updatedProduct
-        });
+        // const updatedProduct = await Model.updateProduct(id, { name, price, category });
+        const updatedProduct = await Model.updateProduct(id, req.body);
+        // console.log('Producto actualizado: ', updatedProduct);
+        // console.log('Producto actualizado: ', {
+        //     message: 'Producto actualizado exitosamente',
+        //     estado: updatedProduct.estado,
+        //     product: updatedProduct.recurso
+        // });
+        // Aclaración superimportante: el código de estado 201 indica que 
+        // se CREÓ un recurso (en este caso, al hacer el PATCH, el recurso
+        // que se quería modificar no existía, entonces lo creó). El objeto
+        // creado -posiblemente con información adicional- puede ser devuelto
+        // en el body del response.
+        // Si el objeto existía previamente, debemos devolver un código de
+        // estado 204 (No content), caso en el cual la especificación HTTP/1.1
+        // indica que "la request no debe incluir un body". Por esta razón,
+        // aunque intentemos crear un body (por ejemplo con obleto modificado),
+        // Express.js no lo permitirá (lo ignora). Si quisieramos devolver 
+        // contenido habrá que usar otro código que lo permita (como 202 Accept),
+        // pero esto no es lo usual para una actualización de recurso (PUT o PATCH).
+        if (updatedProduct.estado === 204) {
+            return res.status(204).send(); // No content
+        }
+        if (updatedProduct.estado === 201) {
+            res.status(updatedProduct.estado).json({
+            message: 'Producto actualizado (creado) exitosamente',
+            estado: updatedProduct.estado,
+            product: updatedProduct.recurso
+            });
+        }
     } catch (error) {
+        console.error('Error al actualizar el producto:', error.message);
+        if(error.message === 'Producto no encontrado') {
+            res.status(404).json({
+                message: 'Producto no encontrado'
+            });
+        }
         res.status(500).json({
-            message: 'Error al crear el producto',
+            message: 'Error al actualizar el producto',
             error: error.message
         });
     }
 }
 
+// Esto es para un PUT, que "pisa" un producto.
 export const replaceProduct = async (req, res) => {
+    const id = req.params.id;
     const name = req.body.name;
     const price = req.body.price;
     const category = req.body.category; /*Espero un array*/
-    if (Array.isArray(req.body.category)) 
-        console.log(`Category is an array ${req.body.category}`);
-    else
-        console.log(`Category is not an array ${req.body.category}`); 
+    // if (Array.isArray(req.body.category)) 
+    //     console.log(`Category is an array ${req.body.category}`);
+    // else
+    //     console.log(`Category is not an array ${req.body.category}`); 
     try {
         const updatedProduct = await Model.replaceProduct(id, { name, price, category });
-        res.status(201).json({
-            message: 'Producto creado exitosamente',
-            product: updatedProduct
-        });
+        // El status code 201 indica que, al hacer el PUT, se creó un nuevo recurso.
+        // El status code 204 indica que se actualizó un recurso existente.
+        if (updatedProduct.estado === 204) {
+            return res.status(204).send(); // No content
+        }
+        if (updatedProduct.estado === 201) {
+            res.status(201).json({
+                message: 'Producto actualizado (creado) exitosamente',
+                estado: updatedProduct.estado,
+                product: updatedProduct.recurso
+            });
+        }
     } catch (error) {
         res.status(500).json({
             message: 'Error al crear el producto',

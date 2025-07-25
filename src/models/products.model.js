@@ -65,18 +65,35 @@ export const createProduct = async (newProductData) => {
 
 export const updateProduct = async (id, updatedProductData) => {
     try {
-        // Obtengo el documento a modificar/pisar.
+        console.log('PATCH del producto con ID: ', id);
+        console.log('PATCH del producto: ', updatedProductData);
+        // Obtengo una referencia al documento en firestore.
         const docRef = doc(productsCollection, id);
+        // Pero docRef siempre es válido, aunque no exista el documento !!!
+        // Así que debo hacer un getDoc para ver si existe.
+        const docSnapshot = await getDoc(docRef);
+        if (!docSnapshot.exists()) {
+            console.log('El documento que queremos PATCHear no existe');
+        } else {
+            console.log('El documento que queremos PATCHear existe');
+        }
         // Existe 'setDoc' y 'updateDoc', pero este último es a veces
         // problemático. Mejor usar setDoc, el cual se comporta como 
         // como PUT o como PATCH dependiendo de su propiedad 'merge'.
         // Si merge está en false (o no está), reemplaza todo el documento (PUT).
         // Si merge está en true, solo actualiza los campos que se pasen (PATCH).
         await setDoc(docRef, updatedProductData, {merge: true});
-        return {
-            id,
-            ...updatedProductData
-        };
+        if (docSnapshot.exists()) {
+            return {
+                estado: 204, /*Se actualizó el recurso*/
+                recurso: {id, ...updatedProductData}
+            };
+        } else {
+            return {
+                estado: 201, /*Se creó un nuevo recurso*/
+                recurso: {id, ...updatedProductData}
+            };
+        }
     } catch (error) {
         console.error('Error al intentar hacer un update del producto');
         throw new Error('Error al intentar hacer un update del producto');
@@ -85,18 +102,33 @@ export const updateProduct = async (id, updatedProductData) => {
 
 export const replaceProduct = async (id, updatedProductData) => {
     try {
+        console.log('PUT de ID: ', id);
+        console.log('PUT del producto: ', updatedProductData);
         // Obtengo el documento a modificar/pisar.
         const docRef = doc(productsCollection, id);
+        const docSnapshot = await getDoc(docRef);
+        if (!docSnapshot.exists()) {
+            console.log('El documento que queremos sobre el que haremos el PUT no existe');
+        } else {
+            console.log('El documento que queremos sobre el que haremos el PUT existe');
+        }
         // Existe 'setDoc' y 'updateDoc', pero este último es a veces
         // problemático. Mejor usar setDoc, el cual se comporta como 
         // como PUT o como PATCH dependiendo de su propiedad 'merge'.
         // Si merge está en false (o no está), reemplaza todo el documento (PUT).
         // Si merge está en true, solo actualiza los campos que se pasen (PATCH).
         await setDoc(docRef, updatedProductData, {merge: false});
-        return {
-            id,
-            ...updatedProductData
-        };
+         if (docSnapshot.exists()) {
+            return {
+                estado: 204, /*Se actualizó el recurso*/
+                recurso: {id, ...updatedProductData}
+            };
+        } else {
+            return {
+                estado: 201, /*Se creó un nuevo recurso*/
+                recurso: {id, ...updatedProductData}
+            };
+        }
     } catch (error) {
         console.error('Error al intentar hacer un update del producto');
         throw new Error('Error al intentar hacer un update del producto');
