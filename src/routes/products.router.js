@@ -31,10 +31,10 @@ import {auth} from '../middlewares/auth.middleware.js';
 // router.get('/products', auth, getAllProducts);
 router.get('/products', getAllProducts);
 router.get('/products/:id', getProductById);
-router.post('/products', createNewProduct);
-router.patch('/products/:id', updateProduct);
-router.put('/products/:id', replaceProduct);
-router.delete('/products/:id', deleteProduct);
+router.post('/products', auth, createNewProduct);
+router.patch('/products/:id', auth, updateProduct);
+router.put('/products/:id', auth, replaceProduct);
+router.delete('/products/:id', auth, deleteProduct);
 
 router.get('/products/:id', (req,res) => {
     const id = req.params.id;
