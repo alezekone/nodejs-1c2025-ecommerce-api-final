@@ -30,13 +30,13 @@ import {auth} from '../middlewares/auth.middleware.js';
 
 // router.get('/products', auth, getAllProducts);
 router.get('/products', getAllProducts);
-router.get('/products/:id', getProductById);
-router.post('/products', auth, createNewProduct);
-router.patch('/products/:id', auth, updateProduct);
-router.put('/products/:id', auth, replaceProduct);
-router.delete('/products/:id', auth, deleteProduct);
+router.get('/product/:id', getProductById);
+router.post('/product', auth, createNewProduct);
+router.patch('/product/:id', auth, updateProduct);
+router.put('/product/:id', auth, replaceProduct);
+router.delete('/product/:id', auth, deleteProduct);
 
-router.get('/products/:id', (req,res) => {
+router.get('/product/:id', (req,res) => {
     const id = req.params.id;
     res.send(`Este es un GET del producto con id ${id}`);
 });

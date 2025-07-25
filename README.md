@@ -48,7 +48,7 @@ npm run dev
 ]
 ```
 ### Obtener un producto por su id
-- GET /api/products/0kPdlYKgwvYv0IiEuiYy
+- GET /api/product/0kPdlYKgwvYv0IiEuiYy
 - Descripción: devuelve el poducto con id 0kPdlYKgwvYv0IiEuiYy de la BD.
 - Response de ejemplo:
 `status 200 OK`
@@ -84,7 +84,7 @@ npm run dev
 ```
 
 ### Crear un producto
-- POST /api/products
+- POST /api/product
 (ruta protegida -> usar el jwt token en el header authorization)
 - Descripción: crea un nuevo poducto en la BD.
 - Response de ejemplo:
@@ -104,21 +104,21 @@ npm run dev
 }
 ```
 ### Reemplazar un producto (PUT)
-- PUT /api/products/0kPdlYKgwvYv0IiEuiYy
+- PUT /api/product/0kPdlYKgwvYv0IiEuiYy
 (ruta protegida -> usar el jwt token en el header authorization)
 - Response de ejemplo:
     - Caso 1: Si el producto existía, lo reemplaza. En este caso, las response será: `status 204 No Content`
     - Caso 2: Si el producto no existía, lo crea (con el id que la BD decida, no con el proporcionado en la URL). Este caso, una response podría ser: `status 201 Created`
 
 ### Actualizar un producto (PATCH)
-- PATCH /api/products/0kPdlYKgwvYv0IiEuiYy
+- PATCH /api/product/0kPdlYKgwvYv0IiEuiYy
 (ruta protegida -> usar el jwt token en el header authorization)
 - Response de ejemplo:
     - Caso 1: Si el producto existía, lo actualiza haciendo un merge del producto acutal con la información de producto sumunistrada en el body de la request. En este caso, las response será: `status 204 No Content`
     - Caso 2: Si el producto no existía, no hace nada. La response será: `status 400 Bad Request`
 
 ### Borrar un producto (DELETE)
-- DELETE /api/products/0kPdlYKgwvYv0IiEuiYy
+- DELETE /api/product/0kPdlYKgwvYv0IiEuiYy
 (ruta protegida -> usar el jwt token en el header authorization)
 - Response de ejemplo:
     - Caso 1: Si el producto existía, lo elimina de la BD. En este caso, las response será: `status 204 No Content`
