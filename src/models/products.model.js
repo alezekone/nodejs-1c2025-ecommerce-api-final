@@ -62,7 +62,8 @@ export const createProduct = async (newProductData) => {
         throw new Error('No se pudo crear el producto');
     }
 };
-
+// PATCH: Si el producto existe, lo actualiza. 
+// Si no existe, no hace nada y devuelve 400 Bad Request.
 export const updateProduct = async (id, updatedProductData) => {
     try {
         console.log('PATCH del producto con ID: ', id);
@@ -82,16 +83,21 @@ export const updateProduct = async (id, updatedProductData) => {
         // como PUT o como PATCH dependiendo de su propiedad 'merge'.
         // Si merge está en false (o no está), reemplaza todo el documento (PUT).
         // Si merge está en true, solo actualiza los campos que se pasen (PATCH).
-        await setDoc(docRef, updatedProductData, {merge: true});
+        // Ojo, solo debería hacer el PATCH si el documento ya existe, es decir,
+        // si en la BD el existe el recurso con el id proporcionado.
         if (docSnapshot.exists()) {
+            // sedDoc crea el producto si no existe, o lo actualiza si ya existe.
+            // Por esta razón, solo lo uso si el documento ya existe.
+            // De otro modo, pienso que crear un producto sería un error
+            // conceptual para un PATCH.
+            await setDoc(docRef, updatedProductData, {merge: true});
             return {
                 estado: 204, /*Se actualizó el recurso*/
                 recurso: {id, ...updatedProductData}
             };
         } else {
             return {
-                estado: 201, /*Se creó un nuevo recurso*/
-                recurso: {id, ...updatedProductData}
+                estado: 400, /*No existe el recurso*/
             };
         }
     } catch (error) {
@@ -100,6 +106,7 @@ export const updateProduct = async (id, updatedProductData) => {
     }
 }
 
+// PUT: Reemplaza un producto, o lo crea si no existe (con el id que la BD decida).
 export const replaceProduct = async (id, updatedProductData) => {
     try {
         console.log('PUT de ID: ', id);
@@ -117,16 +124,17 @@ export const replaceProduct = async (id, updatedProductData) => {
         // como PUT o como PATCH dependiendo de su propiedad 'merge'.
         // Si merge está en false (o no está), reemplaza todo el documento (PUT).
         // Si merge está en true, solo actualiza los campos que se pasen (PATCH).
-        await setDoc(docRef, updatedProductData, {merge: false});
-         if (docSnapshot.exists()) {
+        if (docSnapshot.exists()) {
+            await setDoc(docRef, updatedProductData, {merge: false});
             return {
                 estado: 204, /*Se actualizó el recurso*/
                 recurso: {id, ...updatedProductData}
             };
         } else {
-            return {
+            const docRef2 = await addDoc(productsCollection, updatedProductData);
+            return { 
                 estado: 201, /*Se creó un nuevo recurso*/
-                recurso: {id, ...updatedProductData}
+                recurso: {id: docRef2.id, ...updatedProductData}
             };
         }
     } catch (error) {

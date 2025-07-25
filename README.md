@@ -64,27 +64,65 @@ npm run dev
         "name": "Java Generic and Collections"
     }
 ]
-
+```
 ### Loggearse
-Esta opción es necesaria para obtener un token y acceder al resto de los endpoint de esta API, los cuales se encuentran en rutas protegidas. A modo de ejemplo, puede hacer uso de un usuario y password por default, a saber:
+- POST /auth/login
+    (En el cuerpo de la request irá el json que se muestra a continuación. Se trata de usuario y password por default.)
 ```json
 {
     "email": "usuario@example.com",
     "password": "mipassword123",
 }
 ```
-- POST /auth/login
-En el cuerpo de la request irá el json anterior.
+- Descripción: esta opción permite obtener un token y acceder al resto de los endpoints de esta API, los cuales se encuentran en rutas protegidas.
+- Response de ejemplo:
+`status 200 OK`
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzUzNDEzNDc4LCJleHAiOjE3NTg1OTc0Nzh9.MJFYAHyCjAkAaWIOHfBIH0R8QU9xSN6JchrTbWTOsU4"
+}
+```
 
 ### Crear un producto
 - POST /api/products
-No olvidar el jwt token en el header authorization (antes del token debe estar la palabra Bearer).
+(ruta protegida -> usar el jwt token en el header authorization)
+- Descripción: crea un nuevo poducto en la BD.
+- Response de ejemplo:
+`status 201 Created`
+```json
+{
+    "message": "Producto creado exitosamente",
+    "product": {
+        "id": "P88dkNYJpLT1k3fcm2b8",
+        "name": "Perioperative Medicine - Vol II",
+        "price": 100,
+        "category": [
+            "Medical",
+            "Surgery"
+        ]
+    }
+}
+```
 ### Reemplazar un producto (PUT)
-PUT /api/products/0kPdlYKgwvYv0IiEuiYy
-(con token)
+- PUT /api/products/0kPdlYKgwvYv0IiEuiYy
+(ruta protegida -> usar el jwt token en el header authorization)
+- Response de ejemplo:
+    - Caso 1: Si el producto existía, lo reemplaza. En este caso, las response será: `status 204 No Content`
+    - Caso 2: Si el producto no existía, lo crea (con el id que la BD decida, no con el proporcionado en la URL). Este caso, una response podría ser: `status 201 Created`
+
 ### Actualizar un producto (PATCH)
-PATCH /api/products/0kPdlYKgwvYv0IiEuiYy
-(con token)
+- PATCH /api/products/0kPdlYKgwvYv0IiEuiYy
+(ruta protegida -> usar el jwt token en el header authorization)
+- Response de ejemplo:
+    - Caso 1: Si el producto existía, lo actualiza haciendo un merge del producto acutal con la información de producto sumunistrada en el body de la request. En este caso, las response será: `status 204 No Content`
+    - Caso 2: Si el producto no existía, no hace nada. La response será: `status 400 Bad Request`
+
+### Borrar un producto (DELETE)
+- DELETE /api/products/0kPdlYKgwvYv0IiEuiYy
+(ruta protegida -> usar el jwt token en el header authorization)
+- Response de ejemplo:
+    - Caso 1: Si el producto existía, lo elimina de la BD. En este caso, las response será: `status 204 No Content`
+    - Caso 2: Si el producto no existía, no hace nada. La response será: `status 404 Not Found`
 
 ## Futuras mejoras
 - Mejorar el Readme.

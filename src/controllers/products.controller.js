@@ -73,7 +73,7 @@ export const createNewProduct = async (req, res) => {
     else
         console.log(`Category is not an array ${req.body.category}`); 
     try {
-        const newProduct = await Model.createProduct({ name, price, category });
+        const newProduct = await Model.createProduct(req.body);
         res.status(201).json({
             message: 'Producto creado exitosamente',
             product: newProduct
@@ -121,11 +121,9 @@ export const updateProduct = async (req, res) => {
         if (updatedProduct.estado === 204) {
             return res.status(204).send(); // No content
         }
-        if (updatedProduct.estado === 201) {
+        if (updatedProduct.estado === 400) {
             res.status(updatedProduct.estado).json({
-            message: 'Producto actualizado (creado) exitosamente',
-            estado: updatedProduct.estado,
-            product: updatedProduct.recurso
+            message: 'Producto no encontrado',
             });
         }
     } catch (error) {
@@ -153,7 +151,7 @@ export const replaceProduct = async (req, res) => {
     // else
     //     console.log(`Category is not an array ${req.body.category}`); 
     try {
-        const updatedProduct = await Model.replaceProduct(id, { name, price, category });
+        const updatedProduct = await Model.replaceProduct(id, req.body);
         // El status code 201 indica que, al hacer el PUT, se creó un nuevo recurso.
         // El status code 204 indica que se actualizó un recurso existente.
         if (updatedProduct.estado === 204) {
